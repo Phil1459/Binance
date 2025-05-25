@@ -1,21 +1,23 @@
 from verification import api_keys_testnet as bkt
 from binance.spot import Spot
-import datetime
-
-client = Spot(bkt.api_key, bkt.secret_key,base_url='https://testnet.binance.vision')
-
-#Get server time
-server_time_unix = client.time()["serverTime"]/1000
-server_time_utc = datetime.datetime.fromtimestamp(server_time_unix)
-print(server_time_utc)
+from src import helpers
 
 
-balance = client.account()
-print(balance)
+def main():
+    client = Spot(bkt.api_key, bkt.secret_key,base_url='https://testnet.binance.vision')
+    print("Account balance start: \n",helpers.get_currencies(client))
+    print(client.ticker_price(symbol="APEUSDT"))
 
-#recend trades
-#j = 0
-#recent_trades = client.trades("BTCEUR",limit = 100)
-#for i in recent_trades:
-#    j += 1
-#    print(j,i, datetime.datetime.fromtimestamp(i["time"]/1000))
+    # Post a new order
+    params = {
+        'symbol': 'APEUSDT',
+        'side': 'SELL',
+        'type': 'MARKET',
+        'quantity': 100  
+    }
+    response = client.new_order(**params)
+    print(response)
+    print("Account balance end: \n",helpers.get_currencies(client))
+
+if __name__ == "__main__":
+    main()
