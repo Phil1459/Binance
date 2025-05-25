@@ -1,17 +1,11 @@
 import logging
 
+from .indicators.moving_average import MovingAverage
 from .dependencies.binance import get_spot_client
 
 
 client = get_spot_client()
 
-# params = {"omitZeroBalances": "true"}
+moving_average = MovingAverage(binance_client=client, symbol="APEUSDT", window_size=10)
 
-# Get account information
-# print(client.account(**params))
-
-params = {"symbol": "BTCUSDT", "interval": "1m", "limit": 1}
-
-klines = client.klines(**params)
-
-print(klines)
+print(moving_average.calculate())
